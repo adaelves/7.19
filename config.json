@@ -1,0 +1,45 @@
+{
+  "app": {
+    "name": "多平台视频下载器",
+    "version": "1.0.0",
+    "language": "zh-CN",
+    "theme": "auto"
+  },
+  "download": {
+    "default_path": "./Downloads",
+    "max_concurrent": 3,
+    "auto_retry": true,
+    "retry_attempts": 3,
+    "enable_resume": true,
+    "quality_preference": "best",
+    "format_preference": "mp4"
+  },
+  "ui": {
+    "window_width": 1200,
+    "window_height": 800,
+    "remember_window_size": true,
+    "minimize_to_tray": true,
+    "show_notifications": true,
+    "animation_enabled": true
+  },
+  "advanced": {
+    "enable_hardware_acceleration": true,
+    "enable_proxy": false,
+    "proxy_url": "",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "enable_cookies": true,
+    "cookies_file": "./cookies.txt"
+  },
+  "plugins": {
+    "auto_update": true,
+    "enable_adult_content": false,
+    "enable_experimental": false
+  },
+  "system": {
+    "startup_enabled": false,
+    "boss_key": "Ctrl+Shift+H",
+    "protocol_handler": true,
+    "file_associations": true
+  },
+  "test_key": "test_value"
+}

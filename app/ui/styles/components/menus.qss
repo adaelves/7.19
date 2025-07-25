@@ -1,0 +1,243 @@
+/* 菜单组件样式 */
+
+/* 基础菜单样式 */
+QMenu {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 4px;
+    font-size: 13px;
+}
+
+QMenu::item {
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin: 1px;
+    color: #1d1d1f;
+}
+
+QMenu::item:selected {
+    background: #007aff;
+    color: white;
+}
+
+QMenu::item:disabled {
+    color: #8e8e93;
+}
+
+QMenu::separator {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.1);
+    margin: 4px 8px;
+}
+
+QMenu::icon {
+    padding-left: 4px;
+    width: 16px;
+    height: 16px;
+}
+
+/* 右键菜单样式 */
+#taskContextMenu {
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    padding: 6px;
+    min-width: 160px;
+}
+
+#taskContextMenu::item {
+    padding: 10px 16px;
+    border-radius: 6px;
+    margin: 1px;
+    font-weight: 500;
+}
+
+#taskContextMenu::item:selected {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #007aff, stop:1 #0056cc);
+    color: white;
+}
+
+#taskContextMenu::separator {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
+    margin: 6px 12px;
+}
+
+/* 子菜单样式 */
+QMenu QMenu {
+    margin-left: 2px;
+    margin-top: -4px;
+}
+
+/* 菜单栏样式 */
+QMenuBar {
+    background: transparent;
+    border: none;
+    font-size: 13px;
+    padding: 2px 8px;
+    spacing: 4px;
+}
+
+QMenuBar::item {
+    background: transparent;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: #1d1d1f;
+}
+
+QMenuBar::item:selected {
+    background: rgba(0, 122, 255, 0.1);
+    color: #007aff;
+}
+
+QMenuBar::item:pressed {
+    background: rgba(0, 122, 255, 0.2);
+}
+
+/* 工具栏菜单 */
+.toolbar-menu {
+    background: rgba(245, 245, 245, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.toolbar-menu::item:selected {
+    background: rgba(0, 122, 255, 0.15);
+    color: #007aff;
+}
+
+/* 暗色菜单 */
+.dark-menu {
+    background: rgba(45, 45, 45, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.dark-menu::item {
+    color: #ffffff;
+}
+
+.dark-menu::item:selected {
+    background: #007aff;
+    color: white;
+}
+
+.dark-menu::item:disabled {
+    color: #8e8e93;
+}
+
+.dark-menu::separator {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* 紧凑菜单 */
+.compact-menu {
+    padding: 2px;
+}
+
+.compact-menu::item {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* 大菜单 */
+.large-menu {
+    padding: 8px;
+    min-width: 200px;
+}
+
+.large-menu::item {
+    padding: 12px 20px;
+    font-size: 14px;
+}
+
+/* 图标菜单项 */
+.icon-menu-item {
+    padding-left: 36px;
+}
+
+/* 快捷键显示 */
+.shortcut-text {
+    color: #8e8e93;
+    font-size: 11px;
+    margin-left: 20px;
+}
+
+/* 菜单动画 */
+QMenu {
+    /* 淡入动画通过代码实现 */
+}
+
+/* 分组菜单样式 */
+.menu-group-title {
+    padding: 4px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #8e8e93;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 危险操作菜单项 */
+.danger-menu-item {
+    color: #ff5f57;
+}
+
+.danger-menu-item:selected {
+    background: #ff5f57;
+    color: white;
+}
+
+/* 成功操作菜单项 */
+.success-menu-item {
+    color: #28ca42;
+}
+
+.success-menu-item:selected {
+    background: #28ca42;
+    color: white;
+}
+
+/* 警告操作菜单项 */
+.warning-menu-item {
+    color: #ffbd2e;
+}
+
+.warning-menu-item:selected {
+    background: #ffbd2e;
+    color: white;
+}
+
+/* 复选框菜单项 */
+QMenu::indicator {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+QMenu::indicator:checked {
+    image: url(:/icons/checkmark.png);
+}
+
+QMenu::indicator:unchecked {
+    image: none;
+}
+
+/* 单选按钮菜单项 */
+QMenu::indicator:exclusive {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    margin-right: 4px;
+}
+
+QMenu::indicator:exclusive:checked {
+    background: #007aff;
+    border: 2px solid white;
+}
+
+QMenu::indicator:exclusive:unchecked {
+    background: transparent;
+    border: 1px solid #8e8e93;
+}

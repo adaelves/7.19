@@ -1,0 +1,3 @@
+This file indicates that the application is running in portable mode.
+All user data and configuration will be stored in the Data folder.
+Created by VideoDownloader v1.0.0

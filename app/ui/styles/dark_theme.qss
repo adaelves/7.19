@@ -1,0 +1,107 @@
+/* 暗黑主题样式 */
+
+/* 主窗口背景 */
+QMainWindow {
+    background-color: #1e1e1e;
+}
+
+/* 中央部件 */
+QWidget {
+    background-color: transparent;
+    color: #ffffff;
+}
+
+/* 标题栏 - 暗黑主题 */
+#titleBar {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 rgba(45, 45, 45, 0.95),
+        stop:1 rgba(30, 30, 30, 0.95));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#titleLabel {
+    color: #ffffff;
+}
+
+/* 功能按钮 - 暗黑主题 */
+#themeButton, #settingsButton, #folderButton {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+#themeButton:hover, #settingsButton:hover, #folderButton:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* 输入框 - 暗黑主题 */
+QLineEdit {
+    background-color: rgba(45, 45, 45, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+QLineEdit:focus {
+    background-color: rgba(45, 45, 45, 1.0);
+    border: 2px solid #007aff;
+}
+
+/* 卡片 - 暗黑主题 */
+.card {
+    background-color: rgba(45, 45, 45, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 次要按钮 - 暗黑主题 */
+.secondary-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #007aff;
+    border: 1px solid rgba(0, 122, 255, 0.5);
+}
+
+.secondary-button:hover {
+    background-color: rgba(0, 122, 255, 0.2);
+}
+
+/* 滚动条 - 暗黑主题 */
+QScrollBar::handle:vertical {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+QScrollBar::handle:vertical:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* 分隔线 - 暗黑主题 */
+.separator {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 进度条 - 暗黑主题 */
+QProgressBar {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+/* 列表项 - 暗黑主题 */
+QListWidget {
+    background-color: transparent;
+    border: none;
+}
+
+QListWidget::item {
+    background-color: rgba(45, 45, 45, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin: 2px;
+    padding: 8px;
+    color: #ffffff;
+}
+
+QListWidget::item:selected {
+    background-color: rgba(0, 122, 255, 0.2);
+    border: 1px solid rgba(0, 122, 255, 0.5);
+}
+
+QListWidget::item:hover {
+    background-color: rgba(45, 45, 45, 0.8);
+}

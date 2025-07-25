@@ -1,0 +1,1 @@
+# Core module - Contains core functionality and interfaces

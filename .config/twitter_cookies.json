@@ -1,0 +1,7 @@
+{
+  "auth_token": "imported_auth_token",
+  "ct0": "imported_csrf_token",
+  "twid": "imported_user_id",
+  "source": "chrome_import",
+  "timestamp": 1752905455.537965
+}

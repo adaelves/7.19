@@ -1,0 +1,184 @@
+/* 按钮组件样式 */
+
+/* 主要按钮样式 */
+.primary-button {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #007aff, stop:1 #0056cc);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.primary-button:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #0056cc, stop:1 #004499);
+}
+
+.primary-button:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #004499, stop:1 #003366);
+}
+
+.primary-button:disabled {
+    background: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.3);
+}
+
+/* 次要按钮样式 */
+.secondary-button {
+    background-color: rgba(0, 122, 255, 0.1);
+    color: #007aff;
+    border: 1px solid rgba(0, 122, 255, 0.3);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.secondary-button:hover {
+    background-color: rgba(0, 122, 255, 0.15);
+    border: 1px solid rgba(0, 122, 255, 0.5);
+}
+
+.secondary-button:pressed {
+    background-color: rgba(0, 122, 255, 0.25);
+    border: 1px solid rgba(0, 122, 255, 0.7);
+}
+
+.secondary-button:disabled {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* 危险按钮样式 */
+.danger-button {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #ff5f57, stop:1 #e0443e);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.danger-button:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #ff4136, stop:1 #cc3329);
+}
+
+.danger-button:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #cc3329, stop:1 #99251c);
+}
+
+/* 成功按钮样式 */
+.success-button {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #28ca42, stop:1 #1aad29);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.success-button:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #1db954, stop:1 #159943);
+}
+
+.success-button:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #159943, stop:1 #0f7332);
+}
+
+/* 警告按钮样式 */
+.warning-button {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #ffbd2e, stop:1 #dea123);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.warning-button:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #ffab00, stop:1 #cc8800);
+}
+
+.warning-button:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #cc8800, stop:1 #996600);
+}
+
+/* 圆形按钮样式 */
+.circle-button {
+    border-radius: 16px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 16px;
+}
+
+/* 小按钮样式 */
+.small-button {
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 6px;
+}
+
+/* 大按钮样式 */
+.large-button {
+    padding: 12px 24px;
+    font-size: 15px;
+    border-radius: 10px;
+}
+
+/* 图标按钮样式 */
+.icon-button {
+    background-color: transparent;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    color: #007aff;
+}
+
+.icon-button:hover {
+    background-color: rgba(0, 122, 255, 0.1);
+}
+
+.icon-button:pressed {
+    background-color: rgba(0, 122, 255, 0.2);
+}
+
+/* 切换按钮样式 */
+.toggle-button {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+}
+
+.toggle-button:checked {
+    background-color: #007aff;
+    color: white;
+    border: 1px solid #007aff;
+}
+
+.toggle-button:hover {
+    background-color: rgba(0, 122, 255, 0.1);
+}
+
+.toggle-button:checked:hover {
+    background-color: #0056cc;
+}

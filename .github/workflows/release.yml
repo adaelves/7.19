@@ -1,0 +1,145 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  build-and-release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows
+            artifact: windows-portable
+          - os: macos-latest
+            platform: macos
+            artifact: macos-portable
+          - os: ubuntu-latest
+            platform: linux
+            artifact: linux-portable
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build portable application
+      run: |
+        python build_portable.py --platform ${{ matrix.platform }}
+
+    - name: Create release archive
+      shell: bash
+      run: |
+        if [ "${{ matrix.platform }}" = "windows" ]; then
+          cd portable/windows
+          7z a -tzip ../../multi-platform-video-downloader-${{ matrix.platform }}.zip *
+        elif [ "${{ matrix.platform }}" = "macos" ]; then
+          cd portable/darwin
+          tar -czf ../../multi-platform-video-downloader-${{ matrix.platform }}.tar.gz *
+        else
+          cd portable/linux
+          tar -czf ../../multi-platform-video-downloader-${{ matrix.platform }}.tar.gz *
+        fi
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.artifact }}
+        path: |
+          multi-platform-video-downloader-${{ matrix.platform }}.*
+
+  create-release:
+    needs: build-and-release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        if [ -f CHANGELOG.md ]; then
+          # Extract changelog for current version
+          awk '/^## \[?'${GITHUB_REF#refs/tags/v}'\]?/{flag=1; next} /^## \[?[0-9]/{flag=0} flag' CHANGELOG.md > current_changelog.md
+        else
+          echo "## Changes" > current_changelog.md
+          echo "- Bug fixes and improvements" >> current_changelog.md
+        fi
+        
+        # Set multiline output
+        {
+          echo 'changelog<<EOF'
+          cat current_changelog.md
+          echo EOF
+        } >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: Release ${{ steps.version.outputs.version }}
+        body: ${{ steps.changelog.outputs.changelog }}
+        draft: false
+        prerelease: false
+        files: |
+          windows-portable/multi-platform-video-downloader-windows.zip
+          macos-portable/multi-platform-video-downloader-macos.tar.gz
+          linux-portable/multi-platform-video-downloader-linux.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update latest release info
+      run: |
+        # Create release info JSON for auto-updater
+        cat > release-info.json << EOF
+        {
+          "version": "${{ steps.version.outputs.version }}",
+          "release_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+          "changelog": $(cat current_changelog.md | jq -Rs .),
+          "downloads": {
+            "windows": "https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/multi-platform-video-downloader-windows.zip",
+            "macos": "https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/multi-platform-video-downloader-macos.tar.gz",
+            "linux": "https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/multi-platform-video-downloader-linux.tar.gz"
+          }
+        }
+        EOF
+        
+        # Upload as release asset
+        gh release upload ${{ steps.version.outputs.version }} release-info.json
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

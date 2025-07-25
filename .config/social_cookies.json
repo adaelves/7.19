@@ -1,0 +1,12 @@
+{
+  "tumblr": {
+    "cookies": {
+      "safe_mode": "false",
+      "content_filter": "off",
+      "age_gate_passed": "1"
+    },
+    "logged_in": false,
+    "nsfw_enabled": true,
+    "timestamp": 1752904729.0341737
+  }
+}

@@ -1,0 +1,292 @@
+name: Cross-Platform Compatibility Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      python_versions:
+        description: 'Python versions to test (comma-separated)'
+        required: false
+        default: '3.8,3.9,3.10,3.11,3.12'
+
+jobs:
+  compatibility-tests:
+    name: Test on ${{ matrix.os }} with Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        exclude:
+          # Exclude some combinations to reduce CI time if needed
+          - os: macos-latest
+            python-version: '3.8'
+          - os: windows-latest
+            python-version: '3.8'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Get pip cache dir
+      id: pip-cache
+      run: |
+        echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-${{ matrix.python-version }}-
+          ${{ runner.os }}-pip-
+    
+    - name: Install system dependencies (Ubuntu)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libgl1-mesa-glx \
+          libxkbcommon-x11-0 \
+          libxcb-icccm4 \
+          libxcb-image0 \
+          libxcb-keysyms1 \
+          libxcb-randr0 \
+          libxcb-render-util0 \
+          libxcb-xinerama0 \
+          libxcb-xfixes0 \
+          xvfb
+    
+    - name: Install system dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        # Install any macOS-specific dependencies if needed
+        echo "macOS system dependencies installed"
+    
+    - name: Install system dependencies (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        # Install any Windows-specific dependencies if needed
+        echo "Windows system dependencies installed"
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-qt pytest-asyncio pytest-cov
+        pip install PySide6 requests aiohttp
+        
+        # Install project dependencies if they exist
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        fi
+        
+        if [ -f pyproject.toml ]; then
+          pip install -e .
+        fi
+      shell: bash
+    
+    - name: Install optional tools (Ubuntu/macOS)
+      if: runner.os != 'Windows'
+      run: |
+        # Try to install optional tools
+        pip install yt-dlp || echo "yt-dlp installation failed"
+        
+        # Try to install ffmpeg
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          sudo apt-get install -y ffmpeg || echo "ffmpeg installation failed"
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          brew install ffmpeg || echo "ffmpeg installation failed"
+        fi
+      shell: bash
+    
+    - name: Install optional tools (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        # Try to install optional tools on Windows
+        pip install yt-dlp
+        # Note: ffmpeg would need to be installed separately on Windows
+      shell: bash
+    
+    - name: Run dependency check
+      run: |
+        python tests/utils/dependency_checker.py
+      continue-on-error: true
+    
+    - name: Run compatibility tests (Linux with Xvfb)
+      if: runner.os == 'Linux'
+      run: |
+        xvfb-run -a python tests/run_compatibility_tests.py --verbose
+      env:
+        QT_QPA_PLATFORM: offscreen
+    
+    - name: Run compatibility tests (macOS/Windows)
+      if: runner.os != 'Linux'
+      run: |
+        python tests/run_compatibility_tests.py --verbose
+      env:
+        QT_QPA_PLATFORM: offscreen
+    
+    - name: Upload test reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-reports-${{ matrix.os }}-python${{ matrix.python-version }}
+        path: test_reports/
+        retention-days: 30
+    
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: coverage-${{ matrix.os }}-python${{ matrix.python-version }}
+        path: .coverage*
+        retention-days: 7
+
+  # Aggregate results from all platforms
+  aggregate-results:
+    name: Aggregate Test Results
+    runs-on: ubuntu-latest
+    needs: compatibility-tests
+    if: always()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Download all test reports
+      uses: actions/download-artifact@v3
+      with:
+        path: all-test-reports/
+    
+    - name: Install dependencies
+      run: |
+        pip install jinja2 matplotlib seaborn pandas
+    
+    - name: Generate compatibility matrix
+      run: |
+        python -c "
+        import os
+        import json
+        import glob
+        from pathlib import Path
+        
+        # Collect all JSON reports
+        reports = []
+        for report_file in glob.glob('all-test-reports/**/compatibility_results_*.json', recursive=True):
+            try:
+                with open(report_file, 'r') as f:
+                    data = json.load(f)
+                    reports.append(data)
+            except Exception as e:
+                print(f'Error reading {report_file}: {e}')
+        
+        # Generate summary
+        print('\\n=== CROSS-PLATFORM COMPATIBILITY MATRIX ===\\n')
+        
+        platforms = set()
+        python_versions = set()
+        
+        for report in reports:
+            platform_info = report.get('platform_info', {})
+            platforms.add(platform_info.get('system', 'Unknown'))
+            python_versions.add(platform_info.get('python_version', 'Unknown'))
+        
+        print(f'Tested Platforms: {sorted(platforms)}')
+        print(f'Tested Python Versions: {sorted(python_versions)}')
+        print(f'Total Test Reports: {len(reports)}')
+        
+        # Count successes and failures
+        success_count = 0
+        total_count = 0
+        
+        for report in reports:
+            tests = report.get('tests', {})
+            for test_name, test_result in tests.items():
+                total_count += 1
+                if test_result.get('status') == 'success':
+                    success_count += 1
+        
+        success_rate = (success_count / total_count * 100) if total_count > 0 else 0
+        print(f'\\nOverall Success Rate: {success_rate:.1f}% ({success_count}/{total_count})')
+        "
+    
+    - name: Create compatibility badge
+      run: |
+        # Create a simple badge indicating overall compatibility status
+        echo "Cross-Platform Compatibility: Tested" > compatibility-status.txt
+    
+    - name: Upload aggregated results
+      uses: actions/upload-artifact@v3
+      with:
+        name: aggregated-compatibility-results
+        path: |
+          all-test-reports/
+          compatibility-status.txt
+        retention-days: 90
+
+  # Create release artifacts if all tests pass
+  create-compatibility-report:
+    name: Create Compatibility Report
+    runs-on: ubuntu-latest
+    needs: [compatibility-tests, aggregate-results]
+    if: success()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Download aggregated results
+      uses: actions/download-artifact@v3
+      with:
+        name: aggregated-compatibility-results
+        path: compatibility-results/
+    
+    - name: Generate final report
+      run: |
+        echo "# Cross-Platform Compatibility Report" > COMPATIBILITY_REPORT.md
+        echo "" >> COMPATIBILITY_REPORT.md
+        echo "Generated on: $(date)" >> COMPATIBILITY_REPORT.md
+        echo "" >> COMPATIBILITY_REPORT.md
+        echo "## Test Summary" >> COMPATIBILITY_REPORT.md
+        echo "" >> COMPATIBILITY_REPORT.md
+        echo "✅ All compatibility tests passed successfully!" >> COMPATIBILITY_REPORT.md
+        echo "" >> COMPATIBILITY_REPORT.md
+        echo "## Tested Platforms" >> COMPATIBILITY_REPORT.md
+        echo "" >> COMPATIBILITY_REPORT.md
+        echo "- Ubuntu (Linux)" >> COMPATIBILITY_REPORT.md
+        echo "- Windows" >> COMPATIBILITY_REPORT.md
+        echo "- macOS" >> COMPATIBILITY_REPORT.md
+        echo "" >> COMPATIBILITY_REPORT.md
+        echo "## Tested Python Versions" >> COMPATIBILITY_REPORT.md
+        echo "" >> COMPATIBILITY_REPORT.md
+        echo "- Python 3.8" >> COMPATIBILITY_REPORT.md
+        echo "- Python 3.9" >> COMPATIBILITY_REPORT.md
+        echo "- Python 3.10" >> COMPATIBILITY_REPORT.md
+        echo "- Python 3.11" >> COMPATIBILITY_REPORT.md
+        echo "- Python 3.12" >> COMPATIBILITY_REPORT.md
+    
+    - name: Upload compatibility report
+      uses: actions/upload-artifact@v3
+      with:
+        name: compatibility-report
+        path: COMPATIBILITY_REPORT.md
+        retention-days: 365

@@ -1,0 +1,102 @@
+/* 明亮主题样式 */
+
+/* 主窗口背景 */
+QMainWindow {
+    background-color: #f2f2f7;
+}
+
+/* 中央部件 */
+QWidget {
+    background-color: transparent;
+    color: #1d1d1f;
+}
+
+/* 标题栏 - 明亮主题 */
+#titleBar {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 rgba(255, 255, 255, 0.95),
+        stop:1 rgba(245, 245, 245, 0.95));
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#titleLabel {
+    color: #1d1d1f;
+}
+
+/* 功能按钮 - 明亮主题 */
+#themeButton, #settingsButton, #folderButton {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1d1d1f;
+}
+
+#themeButton:hover, #settingsButton:hover, #folderButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 输入框 - 明亮主题 */
+QLineEdit {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1d1d1f;
+}
+
+QLineEdit:focus {
+    background-color: rgba(255, 255, 255, 1.0);
+    border: 2px solid #007aff;
+}
+
+/* 卡片 - 明亮主题 */
+.card {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* 次要按钮 - 明亮主题 */
+.secondary-button {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #007aff;
+    border: 1px solid rgba(0, 122, 255, 0.3);
+}
+
+/* 滚动条 - 明亮主题 */
+QScrollBar::handle:vertical {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+QScrollBar::handle:vertical:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* 分隔线 - 明亮主题 */
+.separator {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 进度条 - 明亮主题 */
+QProgressBar {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1d1d1f;
+}
+
+/* 列表项 */
+QListWidget {
+    background-color: transparent;
+    border: none;
+}
+
+QListWidget::item {
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    margin: 2px;
+    padding: 8px;
+}
+
+QListWidget::item:selected {
+    background-color: rgba(0, 122, 255, 0.1);
+    border: 1px solid rgba(0, 122, 255, 0.3);
+}
+
+QListWidget::item:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}

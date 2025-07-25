@@ -1,0 +1,210 @@
+/* 基础样式 - macOS风格设计系统 */
+
+/* 全局字体和基础设置 */
+* {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    outline: none;
+}
+
+/* 主窗口 */
+QMainWindow {
+    background-color: transparent;
+}
+
+/* 标题栏 */
+#titleBar {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 rgba(255, 255, 255, 0.95),
+        stop:1 rgba(245, 245, 245, 0.95));
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* 标题标签 */
+#titleLabel {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d1d1f;
+}
+
+/* macOS窗口控制按钮 */
+#windowControlClose {
+    background-color: #ff5f57;
+    border: 1px solid #e0443e;
+    border-radius: 6px;
+}
+
+#windowControlClose:hover {
+    background-color: #ff4136;
+}
+
+#windowControlMinimize {
+    background-color: #ffbd2e;
+    border: 1px solid #dea123;
+    border-radius: 6px;
+}
+
+#windowControlMinimize:hover {
+    background-color: #ffab00;
+}
+
+#windowControlMaximize {
+    background-color: #28ca42;
+    border: 1px solid #1aad29;
+    border-radius: 6px;
+}
+
+#windowControlMaximize:hover {
+    background-color: #1db954;
+}
+
+/* 功能按钮 */
+#themeButton, #settingsButton, #folderButton {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #1d1d1f;
+}
+
+#themeButton:hover, #settingsButton:hover, #folderButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#themeButton:pressed, #settingsButton:pressed, #folderButton:pressed {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* 滚动条样式 */
+QScrollBar:vertical {
+    background: transparent;
+    width: 8px;
+    border-radius: 4px;
+    margin: 0;
+}
+
+QScrollBar::handle:vertical {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: transparent;
+}
+
+/* 输入框基础样式 */
+QLineEdit {
+    padding: 8px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+}
+
+QLineEdit:focus {
+    border: 2px solid #007aff;
+    background-color: rgba(255, 255, 255, 1.0);
+}
+
+/* 按钮基础样式 */
+QPushButton {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+/* 主要按钮 */
+.primary-button {
+    background-color: #007aff;
+    color: white;
+}
+
+.primary-button:hover {
+    background-color: #0056cc;
+}
+
+.primary-button:pressed {
+    background-color: #004499;
+}
+
+/* 次要按钮 */
+.secondary-button {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #007aff;
+    border: 1px solid rgba(0, 122, 255, 0.3);
+}
+
+.secondary-button:hover {
+    background-color: rgba(0, 122, 255, 0.1);
+}
+
+.secondary-button:pressed {
+    background-color: rgba(0, 122, 255, 0.2);
+}
+
+/* 卡片样式 */
+.card {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+/* 分隔线 */
+.separator {
+    background-color: rgba(0, 0, 0, 0.1);
+    height: 1px;
+    border: none;
+}
+
+/* 状态指示器 */
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+}
+
+.status-downloading {
+    background-color: #007aff;
+}
+
+.status-completed {
+    background-color: #28ca42;
+}
+
+.status-paused {
+    background-color: #ffbd2e;
+}
+
+.status-error {
+    background-color: #ff5f57;
+}
+
+/* 进度条 */
+QProgressBar {
+    border: none;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #007aff, stop:1 #5856d6);
+    border-radius: 4px;
+}

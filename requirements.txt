@@ -1,0 +1,25 @@
+# 核心依赖 / Core dependencies
+PySide6>=6.5.0          # GUI框架 / GUI framework
+yt-dlp>=2023.7.6        # 下载引擎(内置FFmpeg支持) / Download engine with FFmpeg
+requests>=2.31.0        # HTTP请求 / HTTP requests
+aiohttp>=3.8.0          # 异步HTTP / Async HTTP
+aiofiles>=23.1.0        # 异步文件操作 / Async file operations
+
+# 工具库 / Utilities
+python-dateutil>=2.8.2  # 日期处理 / Date handling
+pydantic>=2.0.0         # 数据验证 / Data validation
+click>=8.1.0            # 命令行工具 / CLI tools
+watchdog>=3.0.0         # 文件监控(插件热重载) / File monitoring for plugin hot reload
+
+# 可选依赖 / Optional dependencies
+Pillow>=10.0.0          # 图像处理 / Image processing
+cryptography>=41.0.0    # 加密操作 / Cryptographic operations
+psutil>=5.9.0           # 系统监控 / System monitoring
+
+# 开发依赖 / Development dependencies (可选 / Optional)
+# pytest>=7.4.0
+# pytest-asyncio>=0.21.0
+# pytest-qt>=4.2.0
+# black>=23.7.0
+# flake8>=6.0.0
+# mypy>=1.5.0

@@ -1,0 +1,9 @@
+2025-07-21 09:31:57,911 - app.core.utils.performance_monitor - INFO - Performance monitoring started
+2025-07-21 09:31:57,911 - app.core.utils.performance_monitor - INFO - Performance monitoring started
+{"name": "memory.rss", "value": 32665600, "timestamp": 1753061517.9036188, "unit": "bytes", "tags": {}}
+{"name": "memory.vms", "value": 22450176, "timestamp": 1753061517.9036188, "unit": "bytes", "tags": {}}
+{"name": "memory.percent", "value": 0.06366645833032299, "timestamp": 1753061517.9036188, "unit": "percent", "tags": {}}
+{"name": "cpu.percent", "value": 0.0, "timestamp": 1753061517.9036188, "unit": "percent", "tags": {}}
+{"name": "threads.count", "value": 7, "timestamp": 1753061517.9036188, "unit": "count", "tags": {}}
+2025-07-21 09:32:07,970 - app.core.utils.performance_monitor - INFO - Performance monitoring stopped
+2025-07-21 09:32:07,970 - app.core.utils.performance_monitor - INFO - Performance monitoring stopped

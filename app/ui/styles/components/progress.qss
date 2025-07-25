@@ -1,0 +1,142 @@
+/* 进度条组件样式 */
+
+/* 基础进度条 */
+QProgressBar {
+    border: none;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: #1d1d1f;
+    height: 8px;
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #007aff, stop:0.5 #5856d6, stop:1 #007aff);
+    border-radius: 4px;
+    margin: 0px;
+}
+
+/* 魔法进度条样式 */
+.magic-progress {
+    border: none;
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0.08);
+    height: 6px;
+}
+
+.magic-progress::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 rgba(0, 122, 255, 0.8),
+        stop:0.3 rgba(88, 86, 214, 0.9),
+        stop:0.7 rgba(255, 149, 0, 0.8),
+        stop:1 rgba(0, 122, 255, 0.8));
+    border-radius: 3px;
+    margin: 0px;
+}
+
+/* 成功状态进度条 */
+.success-progress::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #28ca42, stop:1 #1db954);
+}
+
+/* 警告状态进度条 */
+.warning-progress::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #ffbd2e, stop:1 #ffab00);
+}
+
+/* 错误状态进度条 */
+.error-progress::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #ff5f57, stop:1 #ff4136);
+}
+
+/* 暂停状态进度条 */
+.paused-progress::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #8e8e93, stop:1 #6d6d70);
+}
+
+/* 细进度条 */
+.thin-progress {
+    height: 4px;
+    border-radius: 2px;
+}
+
+.thin-progress::chunk {
+    border-radius: 2px;
+}
+
+/* 粗进度条 */
+.thick-progress {
+    height: 12px;
+    border-radius: 6px;
+    font-size: 10px;
+}
+
+.thick-progress::chunk {
+    border-radius: 6px;
+}
+
+/* 圆形进度条样式（需要自定义组件实现） */
+.circular-progress {
+    background: transparent;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+}
+
+/* 进度条动画效果 */
+@keyframes progress-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.animated-progress::chunk {
+    background: linear-gradient(45deg, 
+        #007aff 25%, 
+        transparent 25%, 
+        transparent 50%, 
+        #007aff 50%, 
+        #007aff 75%, 
+        transparent 75%, 
+        transparent);
+    background-size: 20px 20px;
+    animation: progress-animation 1s linear infinite;
+}
+
+/* 分段进度条 */
+.segmented-progress {
+    background: transparent;
+}
+
+.segmented-progress::chunk {
+    background: #007aff;
+    margin-right: 2px;
+    border-radius: 2px;
+}
+
+/* 渐变进度条 */
+.gradient-progress::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 rgba(0, 122, 255, 1),
+        stop:0.25 rgba(88, 86, 214, 1),
+        stop:0.5 rgba(255, 149, 0, 1),
+        stop:0.75 rgba(255, 95, 87, 1),
+        stop:1 rgba(40, 202, 66, 1));
+}
+
+/* 脉冲效果进度条 */
+.pulse-progress::chunk {
+    background: #007aff;
+    animation: pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 0.6; }
+    to { opacity: 1.0; }
+}

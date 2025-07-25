@@ -1,0 +1,40 @@
+{
+  "download": {
+    "download_path": "C:/",
+    "quality": "best",
+    "format": "mp4",
+    "max_concurrent": 3,
+    "rate_limit": null,
+    "enable_resume": true,
+    "auto_retry": true,
+    "max_retries": 3,
+    "filename_template": "[%(uploader)s][%(id)s] %(title)s.%(ext)s"
+  },
+  "network": {
+    "proxy_enabled": false,
+    "proxy_type": "socks5",
+    "proxy_host": "",
+    "proxy_port": 8080,
+    "proxy_username": "",
+    "proxy_password": "",
+    "timeout": 30,
+    "user_agent": ""
+  },
+  "ui": {
+    "theme": "light",
+    "language": "zh_CN",
+    "window_width": 1200,
+    "window_height": 956,
+    "window_x": 572,
+    "window_y": 246,
+    "show_tray_icon": false,
+    "minimize_to_tray": false,
+    "close_to_tray": false
+  },
+  "creator": {
+    "check_interval": 3600,
+    "auto_download": false,
+    "notification_enabled": false,
+    "max_videos_per_creator": 50
+  }
+}

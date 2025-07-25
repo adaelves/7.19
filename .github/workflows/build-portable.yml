@@ -1,0 +1,260 @@
+name: Build Portable Applications
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      create_release:
+        description: 'Create GitHub release'
+        type: boolean
+        default: true
+
+jobs:
+  build-portable:
+    name: Build Portable App for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows
+            artifact_name: VideoDownloader_Windows_Portable
+            archive_format: zip
+          - os: macos-latest
+            platform: darwin
+            artifact_name: VideoDownloader_macOS_Portable
+            archive_format: zip
+          - os: ubuntu-latest
+            platform: linux
+            artifact_name: VideoDownloader_Linux_Portable
+            archive_format: tar.gz
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "push" ]; then
+          VERSION=${GITHUB_REF#refs/tags/}
+        else
+          VERSION=${{ github.event.inputs.version }}
+        fi
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "version_number=${VERSION#v}" >> $GITHUB_OUTPUT
+      shell: bash
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install system dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libgl1-mesa-glx \
+          libxkbcommon-x11-0 \
+          libxcb-icccm4 \
+          libxcb-image0 \
+          libxcb-keysyms1 \
+          libxcb-randr0 \
+          libxcb-render-util0 \
+          libxcb-xinerama0 \
+          libxcb-xfixes0 \
+          libegl1-mesa \
+          libxcb-cursor0
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        pip install PySide6 requests aiohttp yt-dlp
+        
+        # Install project dependencies if they exist
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        fi
+        
+        if [ -f pyproject.toml ]; then
+          pip install -e .
+        fi
+      shell: bash
+    
+    - name: Install optional tools (Ubuntu/macOS)
+      if: matrix.os != 'windows-latest'
+      run: |
+        # Try to install ffmpeg
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          sudo apt-get install -y ffmpeg || echo "ffmpeg installation failed"
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          brew install ffmpeg || echo "ffmpeg installation failed"
+        fi
+      shell: bash
+    
+    - name: Create version info
+      run: |
+        # Update version in build scripts
+        sed -i.bak "s/VERSION = \"1.0.0\"/VERSION = \"${{ steps.version.outputs.version_number }}\"/g" build_scripts/pyinstaller_config.py
+        sed -i.bak "s/app_version: str = \"1.0.0\"/app_version: str = \"${{ steps.version.outputs.version_number }}\"/g" app/core/config.py
+      shell: bash
+    
+    - name: Create assets directory
+      run: |
+        mkdir -p assets
+        # Create placeholder icon files
+        touch assets/icon.ico assets/icon.icns assets/icon.png
+    
+    - name: Build portable application
+      run: |
+        python build_scripts/build_portable.py \
+          --platform ${{ matrix.platform }} \
+          --archive-format ${{ matrix.archive_format }} \
+          --verbose
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+    
+    - name: List build outputs
+      run: |
+        echo "Build directory contents:"
+        ls -la portable/${{ matrix.platform }}/ || true
+        echo "Archive files:"
+        find portable/${{ matrix.platform }}/ -name "*.zip" -o -name "*.tar.gz" || true
+      shell: bash
+    
+    - name: Find archive file
+      id: find_archive
+      run: |
+        if [ "${{ matrix.archive_format }}" = "zip" ]; then
+          ARCHIVE_FILE=$(find portable/${{ matrix.platform }}/ -name "*.zip" | head -1)
+        else
+          ARCHIVE_FILE=$(find portable/${{ matrix.platform }}/ -name "*.tar.gz" | head -1)
+        fi
+        
+        if [ -n "$ARCHIVE_FILE" ] && [ -f "$ARCHIVE_FILE" ]; then
+          echo "archive_path=$ARCHIVE_FILE" >> $GITHUB_OUTPUT
+          echo "archive_name=$(basename $ARCHIVE_FILE)" >> $GITHUB_OUTPUT
+          echo "Found archive: $ARCHIVE_FILE"
+        else
+          echo "No archive file found!"
+          exit 1
+        fi
+      shell: bash
+    
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: ${{ steps.find_archive.outputs.archive_path }}
+        retention-days: 30
+    
+    - name: Upload to release
+      if: github.event_name == 'push' || github.event.inputs.create_release == 'true'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: VideoDownloader ${{ steps.version.outputs.version }}
+        draft: false
+        prerelease: false
+        files: ${{ steps.find_archive.outputs.archive_path }}
+        body: |
+          ## VideoDownloader ${{ steps.version.outputs.version }}
+          
+          ### 🎉 新版本发布！
+          
+          这是VideoDownloader的便携版本，无需安装即可使用。
+          
+          ### 📦 下载说明
+          
+          - **Windows用户**: 下载 `VideoDownloader_*_Win64_Portable.zip`
+          - **macOS用户**: 下载 `VideoDownloader_*_macOS_Portable.zip`  
+          - **Linux用户**: 下载 `VideoDownloader_*_Linux64_Portable.tar.gz`
+          
+          ### 🚀 使用方法
+          
+          1. 下载对应平台的压缩包
+          2. 解压到任意目录
+          3. 运行启动脚本：
+             - Windows: 双击 `VideoDownloader.bat`
+             - macOS: 双击 `Run_VideoDownloader.command`
+             - Linux: 运行 `./run_VideoDownloader.sh`
+          
+          ### ✨ 主要特性
+          
+          - 🎬 支持多平台视频下载
+          - 📱 支持社交媒体平台
+          - 🔄 批量下载和监控
+          - 🎨 现代化UI界面
+          - 🔌 插件系统支持
+          - 💾 便携版设计，数据本地存储
+          
+          ### 🛠️ 系统要求
+          
+          - **Windows**: Windows 10 或更高版本
+          - **macOS**: macOS 10.13 或更高版本  
+          - **Linux**: 现代Linux发行版
+          - **内存**: 4GB RAM 最低
+          - **存储**: 1GB 可用空间
+          - **网络**: 互联网连接
+          
+          ### 🐛 问题反馈
+          
+          如果遇到问题，请在 [Issues](https://github.com/${{ github.repository }}/issues) 页面反馈。
+          
+          ### 📝 更新日志
+          
+          - 新增便携版支持
+          - 优化跨平台兼容性
+          - 改进用户界面
+          - 修复已知问题
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  create-checksums:
+    name: Create Checksums
+    needs: build-portable
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.inputs.create_release == 'true'
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: artifacts/
+    
+    - name: Create checksums
+      run: |
+        cd artifacts/
+        find . -name "*.zip" -o -name "*.tar.gz" | while read file; do
+          echo "Creating checksum for: $file"
+          sha256sum "$file" >> checksums.txt
+        done
+        
+        echo "Checksums created:"
+        cat checksums.txt
+    
+    - name: Upload checksums to release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.ref_name }}
+        files: artifacts/checksums.txt
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
