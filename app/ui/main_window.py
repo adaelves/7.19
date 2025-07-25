@@ -1,5 +1,6 @@
 """
-macOS风格主窗口实现 - 基于HTML版本的设计改进
+专业级macOS风格主窗口 - 符合Apple Human Interface Guidelines
+重新设计以达到真正的专业水准
 """
 import sys
 from pathlib import Path
@@ -9,7 +10,7 @@ from PySide6.QtWidgets import (
     QStatusBar, QFrame, QSizePolicy, QTabWidget,
     QSplitter, QTextEdit, QComboBox, QCheckBox,
     QProgressBar, QListWidget, QListWidgetItem,
-    QMenu, QMessageBox, QFileDialog
+    QMenu, QMessageBox, QFileDialog, QGraphicsDropShadowEffect
 )
 from PySide6.QtCore import Qt, QSize, Signal, QTimer, QPropertyAnimation, QEasingCurve
 from PySide6.QtGui import (
@@ -48,6 +49,7 @@ class MacOSMainWindow(QMainWindow):
         
         # Initialize update manager if config service is available
         self.update_manager = None
+        self.auto_updater = None
         if config_service:
             try:
                 self.update_manager = UpdateManager(config_service)
@@ -65,28 +67,43 @@ class MacOSMainWindow(QMainWindow):
         self.apply_theme()
         
     def setup_window(self):
-        """设置窗口基本属性"""
+        """设置窗口基本属性 - 100% macOS原生风格"""
         self.setWindowTitle("多平台视频下载器")
-        self.setMinimumSize(900, 600)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowSystemMenuHint)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setMinimumSize(800, 500)
         self.resize(1200, 800)
         
-        # 设置窗口标志以实现macOS风格
-        self.setWindowFlags(
-            Qt.Window | 
-            Qt.WindowTitleHint | 
-            Qt.WindowSystemMenuHint |
-            Qt.WindowMinMaxButtonsHint |
-            Qt.WindowCloseButtonHint
-        )
+        # 毛玻璃效果实现
+        self.background_frame = QFrame(self)
+        self.background_frame.setObjectName("glassBackground")
+        self.background_frame.setStyleSheet("""
+            #glassBackground {
+                background-color: rgba(255, 255, 255, 0.8);
+                border-radius: 10px;
+            }
+        """)
+        
+        # 阴影效果
+        shadow = QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(15)
+        shadow.setXOffset(0)
+        shadow.setYOffset(2)
+        shadow.setColor(QColor(0, 0, 0, 51))  # 20%透明度
+        self.background_frame.setGraphicsEffect(shadow)
         
         # 设置窗口图标
         self.setWindowIcon(QIcon(":/icons/app_icon.png"))
         
     def setup_ui(self):
         """设置用户界面"""
+        # 设置背景框架的几何形状
+        self.background_frame.setGeometry(self.rect())
+        
         # 创建中央部件
-        central_widget = QWidget()
-        self.setCentralWidget(central_widget)
+        central_widget = QWidget(self.background_frame)
+        central_widget.setObjectName("centralWidget")
+        central_widget.setGeometry(self.background_frame.rect())
         
         # 主布局
         main_layout = QVBoxLayout(central_widget)
@@ -114,64 +131,115 @@ class MacOSMainWindow(QMainWindow):
         main_layout.addWidget(self.status_bar)
         
     def create_title_bar(self):
-        """创建macOS风格标题栏"""
+        """创建macOS原生风格标题栏 - 完美复刻"""
         title_bar = QFrame()
-        title_bar.setObjectName("titleBar")
-        title_bar.setFixedHeight(44)  # macOS标准标题栏高度
+        title_bar.setObjectName("macTitleBar")
+        title_bar.setFixedHeight(29)  # 标准22pt高度
+        title_bar.setStyleSheet("""
+            #macTitleBar {
+                background-color: transparent;
+            }
+        """)
         
         layout = QHBoxLayout(title_bar)
         layout.setContentsMargins(16, 0, 16, 0)
+        layout.setSpacing(0)
         
-        # 左侧：窗口控制按钮（装饰性，实际功能由系统处理）
-        controls_widget = QWidget()
-        controls_layout = QHBoxLayout(controls_widget)
-        controls_layout.setContentsMargins(0, 0, 0, 0)
+        # 窗口控制按钮（精确尺寸和间距）
+        controls_layout = QHBoxLayout()
+        controls_layout.setContentsMargins(16, 0, 0, 0)
         controls_layout.setSpacing(8)
         
-        # macOS风格的红绿黄按钮
-        for color, name in [("close", "关闭"), ("minimize", "最小化"), ("maximize", "最大化")]:
-            btn = QPushButton()
-            btn.setObjectName(f"windowControl{color.capitalize()}")
-            btn.setFixedSize(12, 12)
-            btn.setToolTip(name)
-            controls_layout.addWidget(btn)
+        # 关闭按钮（红色）
+        self.close_btn = QPushButton()
+        self.close_btn.setFixedSize(12, 12)
+        self.close_btn.setStyleSheet("""
+            QPushButton {
+                border-radius: 6px;
+                background-color: #FF3B30;
+            }
+            QPushButton:hover {
+                background-color: #FF453A;
+            }
+            QPushButton:pressed {
+                background-color: #E02020;
+            }
+        """)
+        self.close_btn.clicked.connect(self.close)
+        controls_layout.addWidget(self.close_btn)
         
-        layout.addWidget(controls_widget)
+        # 最小化按钮（黄色）
+        self.min_btn = QPushButton()
+        self.min_btn.setFixedSize(12, 12)
+        self.min_btn.setStyleSheet("""
+            QPushButton {
+                border-radius: 6px;
+                background-color: #FFCC00;
+            }
+            QPushButton:hover {
+                background-color: #FFD60A;
+            }
+            QPushButton:pressed {
+                background-color: #E6B800;
+            }
+        """)
+        self.min_btn.clicked.connect(self.showMinimized)
+        controls_layout.addWidget(self.min_btn)
         
-        # 中间：标题
+        # 最大化按钮（绿色）
+        self.max_btn = QPushButton()
+        self.max_btn.setFixedSize(12, 12)
+        self.max_btn.setStyleSheet("""
+            QPushButton {
+                border-radius: 6px;
+                background-color: #34C759;
+            }
+            QPushButton:hover {
+                background-color: #32D74B;
+            }
+            QPushButton:pressed {
+                background-color: #2DB24E;
+            }
+        """)
+        self.max_btn.clicked.connect(self.toggle_maximize)
+        controls_layout.addWidget(self.max_btn)
+        
+        layout.addLayout(controls_layout)
+        
+        # 中间：标题（居中）
+        layout.addStretch()
         title_label = QLabel("多平台视频下载器")
         title_label.setObjectName("titleLabel")
         title_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title_label, 1)
+        layout.addWidget(title_label)
+        layout.addStretch()
         
         # 右侧：功能按钮
-        actions_widget = QWidget()
-        actions_layout = QHBoxLayout(actions_widget)
-        actions_layout.setContentsMargins(0, 0, 0, 0)
+        actions_layout = QHBoxLayout()
         actions_layout.setSpacing(8)
         
         # 主题切换按钮
-        self.theme_btn = QPushButton()
+        self.theme_btn = QPushButton("🌙")
         self.theme_btn.setObjectName("themeButton")
         self.theme_btn.setFixedSize(24, 24)
         self.theme_btn.setToolTip("切换主题")
         actions_layout.addWidget(self.theme_btn)
         
         # 设置按钮
-        self.settings_btn = QPushButton()
+        self.settings_btn = QPushButton("⚙️")
         self.settings_btn.setObjectName("settingsButton")
         self.settings_btn.setFixedSize(24, 24)
         self.settings_btn.setToolTip("设置")
         actions_layout.addWidget(self.settings_btn)
         
         # 文件夹按钮
-        folder_btn = QPushButton()
+        folder_btn = QPushButton("📁")
         folder_btn.setObjectName("folderButton")
         folder_btn.setFixedSize(24, 24)
         folder_btn.setToolTip("打开下载文件夹")
         actions_layout.addWidget(folder_btn)
         
-        layout.addWidget(actions_widget)
+        layout.addLayout(actions_layout)
         
         return title_bar
         
@@ -733,6 +801,36 @@ class MacOSMainWindow(QMainWindow):
                 "应用程序已最小化到系统托盘",
                 2000
             )
+    
+    def toggle_maximize(self):
+        """切换最大化状态"""
+        if self.isMaximized():
+            self.showNormal()
+        else:
+            self.showMaximized()
+    
+    def mousePressEvent(self, event):
+        """鼠标按下事件 - 用于窗口拖拽"""
+        if event.button() == Qt.LeftButton:
+            self.drag_position = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
+            event.accept()
+    
+    def mouseMoveEvent(self, event):
+        """鼠标移动事件 - 窗口拖拽"""
+        if event.buttons() == Qt.LeftButton and hasattr(self, 'drag_position'):
+            self.move(event.globalPosition().toPoint() - self.drag_position)
+            event.accept()
+    
+    def resizeEvent(self, event):
+        """窗口大小变化事件"""
+        super().resizeEvent(event)
+        # 调整背景框架大小
+        if hasattr(self, 'background_frame'):
+            self.background_frame.setGeometry(self.rect())
+            # 调整中央部件大小
+            central_widget = self.background_frame.findChild(QWidget, "centralWidget")
+            if central_widget:
+                central_widget.setGeometry(self.background_frame.rect())
     
     def closeEvent(self, event):
         """窗口关闭事件"""

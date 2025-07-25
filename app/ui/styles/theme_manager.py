@@ -8,7 +8,7 @@ from PySide6.QtCore import QObject, Signal
 
 
 class ThemeManager(QObject):
-    """主题管理器"""
+    """macOS原生主题管理器"""
     
     theme_changed = Signal(str)
     
@@ -17,6 +17,29 @@ class ThemeManager(QObject):
         self.current_theme = "light"
         self.themes_dir = Path(__file__).parent
         self.config_file = Path.home() / ".video_downloader" / "theme_config.json"
+        
+        # macOS原生主题映射
+        self.style_maps = {
+            "light": {
+                "window_bg": "rgba(255, 255, 255, 0.8)",
+                "card_bg": "white",
+                "text_primary": "#1D1D1F",
+                "text_secondary": "#86868B",
+                "border": "#E2E2E2",
+                "hover": "#F0F0F0",
+                "accent": "#007AFF"
+            },
+            "dark": {
+                "window_bg": "rgba(28, 28, 30, 0.8)",
+                "card_bg": "#2C2C2E",
+                "text_primary": "#F5F5F7",
+                "text_secondary": "#AEAEB2",
+                "border": "#3A3A3C",
+                "hover": "#3A3A3C",
+                "accent": "#0A84FF"
+            }
+        }
+        
         self.load_settings()
         
     def load_settings(self):
@@ -47,6 +70,12 @@ class ThemeManager(QObject):
             
     def get_stylesheet(self) -> str:
         """获取当前主题的样式表"""
+        # 优先使用专业级样式
+        professional_style = self._load_style_file("professional_macos.qss")
+        if professional_style:
+            return professional_style
+        
+        # 回退到原有样式系统
         # 加载基础样式
         base_style = self._load_style_file("base.qss")
         
@@ -112,27 +141,30 @@ class ThemeManager(QObject):
             
         return css_content
         
+    def apply_theme(self, widget):
+        """应用主题到指定控件"""
+        theme = self.style_maps[self.current_theme]
+        stylesheet = f"""
+        #glassBackground {{
+            background-color: {theme['window_bg']};
+        }}
+        QLabel#titleLabel {{
+            color: {theme['text_primary']};
+            font-family: 'SF Pro Display';
+            font-size: 13pt;
+            font-weight: 500;
+        }}
+        QFrame#navigationBar {{
+            background-color: {theme['card_bg']};
+            border-bottom: 1px solid {theme['border']};
+        }}
+        QFrame#macTitleBar {{
+            background-color: transparent;
+        }}
+        /* 所有控件样式都需要按主题映射 */
+        """
+        widget.setStyleSheet(stylesheet)
+    
     def get_theme_colors(self) -> Dict[str, str]:
         """获取当前主题的颜色配置"""
-        if self.current_theme == "dark":
-            return {
-                'background': '#1e1e1e',
-                'surface': '#2d2d2d',
-                'primary': '#007aff',
-                'secondary': '#5856d6',
-                'text_primary': '#ffffff',
-                'text_secondary': '#8e8e93',
-                'border': '#38383a',
-                'accent': '#ff9500'
-            }
-        else:  # light theme
-            return {
-                'background': '#f2f2f7',
-                'surface': '#ffffff',
-                'primary': '#007aff',
-                'secondary': '#5856d6',
-                'text_primary': '#000000',
-                'text_secondary': '#8e8e93',
-                'border': '#c6c6c8',
-                'accent': '#ff9500'
-            }
+        return self.style_maps[self.current_theme]

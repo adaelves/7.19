@@ -2,7 +2,21 @@
 
 /* 主窗口背景 */
 QMainWindow {
-    background-color: #1e1e1e;
+    background-color: rgba(28, 28, 30, 0.95);
+    border-radius: 10px;
+}
+
+/* 中央部件毛玻璃效果 */
+#centralWidget {
+    background-color: rgba(30, 30, 30, 0.8);
+    border-radius: 10px;
+}
+
+/* 搜索容器 */
+#searchContainer {
+    background-color: rgba(30, 30, 30, 0.8);
+    border-radius: 8px;
+    padding: 12px;
 }
 
 /* 中央部件 */
@@ -35,20 +49,42 @@ QWidget {
 
 /* 输入框 - 暗黑主题 */
 QLineEdit {
-    background-color: rgba(45, 45, 45, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    background-color: rgba(58, 58, 60, 0.8);
+    border: 1px solid #48484A;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #FFFFFF;
 }
 
 QLineEdit:focus {
-    background-color: rgba(45, 45, 45, 1.0);
-    border: 2px solid #007aff;
+    border-color: #0A84FF;
+    outline: none;
 }
 
 /* 卡片 - 暗黑主题 */
 .card {
     background-color: rgba(45, 45, 45, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 按钮样式 - 暗黑主题 */
+QPushButton {
+    background-color: #0A84FF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+QPushButton:hover {
+    background-color: #409CFF;
+}
+
+QPushButton:pressed {
+    background-color: #0066CC;
 }
 
 /* 次要按钮 - 暗黑主题 */
@@ -84,24 +120,25 @@ QProgressBar {
 
 /* 列表项 - 暗黑主题 */
 QListWidget {
-    background-color: transparent;
-    border: none;
+    background-color: rgba(44, 44, 46, 0.8);
+    border: 1px solid #3A3A3C;
+    border-radius: 8px;
+    color: #FFFFFF;
+    font-size: 13px;
 }
 
 QListWidget::item {
-    background-color: rgba(45, 45, 45, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 8px 12px;
+    border-bottom: 1px solid #3A3A3C;
     border-radius: 8px;
     margin: 2px;
-    padding: 8px;
-    color: #ffffff;
-}
-
-QListWidget::item:selected {
-    background-color: rgba(0, 122, 255, 0.2);
-    border: 1px solid rgba(0, 122, 255, 0.5);
 }
 
 QListWidget::item:hover {
-    background-color: rgba(45, 45, 45, 0.8);
+    background-color: rgba(58, 58, 60, 0.8);
+}
+
+QListWidget::item:selected {
+    background-color: rgba(10, 132, 255, 0.8);
+    color: white;
 }

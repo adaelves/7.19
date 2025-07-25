@@ -1,174 +1,126 @@
-# Multi-platform Video Downloader
+# 🎬 多平台视频下载器
 
-一个功能强大的跨平台视频下载器，支持多个主流视频平台，采用现代化GUI界面设计。
+一个现代化的多平台视频下载工具，采用macOS风格设计，支持多个主流视频平台。
 
-## ✨ 主要特性
+## ✨ 功能特点
 
-- 🎬 **多平台支持**: YouTube, B站, 抖音, Instagram, Twitter等
-- 📱 **社交媒体**: 支持各大社交媒体平台的视频和图片下载
-- 🔄 **批量下载**: 支持批量下载和创作者监控
-- 🎨 **现代UI**: 基于PySide6的现代化界面设计
-- 🔌 **插件系统**: 可扩展的插件架构
-- 💾 **便携版**: 支持便携模式，数据本地存储
-- 🌍 **跨平台**: Windows, macOS, Linux全平台支持
+- 🎥 **多平台支持** - 支持YouTube、Bilibili、抖音等主流平台
+- 🎨 **精美界面** - 完全按照macOS设计规范实现
+- 📱 **响应式设计** - 适配不同屏幕尺寸
+- 🌙 **主题切换** - 支持浅色/深色主题
+- 📊 **实时进度** - 可视化下载进度和状态
+- 🔄 **批量下载** - 支持队列和批量操作
+- 📁 **路径管理** - 自定义下载路径
+- 🎵 **格式选择** - 支持视频/音频格式转换
 
 ## 🚀 快速开始
 
-### 方法1: 直接运行（推荐）
+### 系统要求
+- Python 3.8+
+- PySide6
+- yt-dlp
+- requests
 
-#### Windows用户
-1. 双击 `VideoDownloader.bat` 文件
-2. 等待依赖检查完成
-3. 应用程序将自动启动
+### 安装步骤
 
-#### macOS/Linux用户
-1. 打开终端，进入项目目录
-2. 运行: `chmod +x run_VideoDownloader.sh`
-3. 运行: `./run_VideoDownloader.sh`
-
-#### 通用方法
+1. **克隆仓库**
 ```bash
-# 使用Python启动器
+git clone <repository-url>
+cd video-downloader
+```
+
+2. **安装依赖**
+```bash
+pip install -r requirements.txt
+```
+
+3. **启动程序**
+```bash
+# 默认启动（HTML风格界面，推荐）
 python run.py
 
-# 或直接运行主程序
-python app/main.py
+# 或选择界面风格
+python run.py html     # HTML风格界面
+python run.py native   # macOS原生风格界面
 ```
 
-### 方法2: 手动安装依赖
-
+### 界面测试
 ```bash
-# 1. 安装Python依赖
-pip install PySide6 requests aiohttp yt-dlp
-
-# 2. 运行应用程序
-python app/main.py
+# 可视化界面选择器
+python test_html_style.py
 ```
 
-## 📋 系统要求
+## 🎨 界面风格
 
-- **Python**: 3.8 或更高版本
-- **操作系统**: Windows 10+, macOS 10.13+, 或现代Linux发行版
-- **内存**: 4GB RAM 最低
-- **存储**: 1GB 可用空间
-- **网络**: 互联网连接
+### HTML风格界面（推荐）⭐
+- 完全按照设计稿实现
+- 900x600固定窗口
+- 现代化macOS设计
+- Tailwind CSS颜色系统
 
-## 🎯 使用方法
+### macOS原生风格界面
+- 100% Apple设计规范
+- 响应式窗口大小
+- SF Pro字体系统
+- 原生交互体验
 
-1. **启动应用程序**
-   - 使用上述任一方法启动应用程序
+## 📖 使用说明
 
-2. **下载视频**
-   - 在URL输入框中粘贴视频链接
-   - 点击"开始下载"按钮或按回车键
-   - 在下载标签页中查看进度
+1. **启动程序** - 运行 `python run.py`
+2. **输入链接** - 在搜索框中粘贴视频URL
+3. **添加下载** - 点击"添加下载"按钮
+4. **监控进度** - 在下载列表中查看实时进度
+5. **管理文件** - 使用操作按钮控制下载状态
 
-3. **查看历史**
-   - 切换到"历史"标签页查看下载记录
+## 🌐 支持的平台
 
-4. **配置设置**
-   - 在"设置"标签页中查看和修改配置
+- ✅ YouTube
+- ✅ Bilibili (哔哩哔哩)
+- ✅ 抖音 (TikTok)
+- ✅ 快手
+- ✅ 微博视频
+- ✅ 西瓜视频
+- 🔄 更多平台持续添加中...
 
-## 🔧 开发者指南
-
-### 安装开发依赖
-
-```bash
-# 安装基础依赖
-pip install PySide6 requests aiohttp yt-dlp
-
-# 安装开发工具
-pip install pytest pytest-qt pytest-asyncio black flake8 isort
-
-# 安装打包工具
-pip install pyinstaller
-```
-
-### 运行测试
-
-```bash
-# 运行所有测试
-python -m pytest tests/ -v
-
-# 运行便携版测试
-python -m pytest tests/test_portable_build.py -v
-
-# 运行兼容性测试
-python tests/run_compatibility_tests.py
-```
-
-### 构建便携版
-
-```bash
-# 构建当前平台
-python build_portable.py
-
-# 构建所有平台
-python build_portable.py --platform all
-
-# 使用Makefile (如果可用)
-make build-portable
-```
-
-## 📦 便携版说明
-
-应用程序支持便携模式，所有配置和数据将存储在应用程序目录下的 `Data` 文件夹中：
+## 📁 项目结构
 
 ```
-VideoDownloader/
-├── VideoDownloader.bat      # Windows启动器
-├── run_VideoDownloader.sh   # Linux/macOS启动器
-├── run.py                   # Python启动器
-├── app/                     # 应用程序代码
-├── Data/                    # 便携数据目录
-│   ├── Config/             # 配置文件
-│   ├── Downloads/          # 默认下载目录
-│   ├── Cache/              # 缓存文件
-│   ├── Logs/               # 日志文件
-│   └── Plugins/            # 插件目录
-└── portable.txt            # 便携模式标记
+多平台视频下载器/
+├── run.py                     # 主启动文件
+├── test_html_style.py         # 界面测试工具
+└── app/
+    ├── ui/
+    │   ├── html_style_window.py   # HTML风格界面（推荐）
+    │   ├── main_window.py         # macOS原生界面
+    │   └── styles/                # 样式文件
+    ├── core/                      # 核心功能
+    ├── services/                  # 服务层
+    └── plugins/                   # 插件系统
 ```
 
-## 🐛 故障排除
+## 🛠️ 开发说明
 
-### 常见问题
+- **主界面**: `app/ui/html_style_window.py` (推荐使用)
+- **样式管理**: `app/ui/styles/theme_manager.py`
+- **控件库**: `app/ui/macos_widgets.py`
+- **动画系统**: `app/ui/animation_helper.py`
 
-1. **"未找到Python"错误**
-   - 确保已安装Python 3.8+
-   - 确保Python已添加到系统PATH
+## 🧹 项目优化
 
-2. **"缺少依赖"错误**
-   - 运行: `pip install PySide6 requests aiohttp yt-dlp`
-
-3. **界面显示异常**
-   - 确保显示器支持GUI应用程序
-   - 在Linux上可能需要安装额外的GUI库
-
-4. **下载失败**
-   - 检查网络连接
-   - 确认视频链接有效
-   - 某些平台可能需要特殊处理
-
-### 获取帮助
-
-- 查看日志输出（在应用程序的"下载"标签页中）
-- 检查 `Data/Logs/` 目录中的日志文件
-- 在GitHub上提交Issue
-
-## 📄 许可证
-
-本项目采用开源许可证。详见 [LICENSE](LICENSE) 文件。
+经过全面清理，项目现在更加简洁：
+- **删除了13个重复/冗余文件**
+- **启动文件从8个减少到2个**
+- **UI实现从4个减少到2个**
+- **统一了控件库**
 
 ## 🤝 贡献
 
-欢迎贡献代码！请查看贡献指南了解详情。
+欢迎提交Issue和Pull Request来帮助改进项目！
 
-## 📞 联系方式
+## 📄 许可证
 
-- GitHub: [项目仓库地址]
-- Issues: [问题反馈地址]
-- 文档: [项目文档地址]
+MIT License - 详见 [LICENSE](LICENSE) 文件
 
 ---
 
-**注意**: 请遵守各平台的服务条款，仅下载您有权下载的内容。
+💡 **提示**: 推荐使用 `python run.py` 启动，将获得最佳的界面体验！

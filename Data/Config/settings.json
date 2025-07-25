@@ -1,40 +1,33 @@
 {
-  "download": {
-    "download_path": "C:/",
-    "quality": "best",
-    "format": "mp4",
-    "max_concurrent": 3,
-    "rate_limit": null,
-    "enable_resume": true,
-    "auto_retry": true,
-    "max_retries": 3,
-    "filename_template": "[%(uploader)s][%(id)s] %(title)s.%(ext)s"
-  },
-  "network": {
-    "proxy_enabled": false,
-    "proxy_type": "socks5",
-    "proxy_host": "",
-    "proxy_port": 8080,
-    "proxy_username": "",
-    "proxy_password": "",
-    "timeout": 30,
-    "user_agent": ""
-  },
-  "ui": {
-    "theme": "light",
-    "language": "zh_CN",
-    "window_width": 1200,
-    "window_height": 956,
-    "window_x": 572,
-    "window_y": 246,
-    "show_tray_icon": false,
-    "minimize_to_tray": false,
-    "close_to_tray": false
-  },
-  "creator": {
-    "check_interval": 3600,
-    "auto_download": false,
-    "notification_enabled": false,
-    "max_videos_per_creator": 50
-  }
+  "app_name": "Multi-platform Video Downloader",
+  "app_version": "1.0.0",
+  "download_path": "C:\\Users\\Wang\\Downloads\\VideoDownloader",
+  "config_path": "C:\\Users\\Wang\\.video_downloader",
+  "plugin_path": "app/plugins",
+  "max_concurrent_downloads": 3,
+  "default_quality": "best",
+  "default_format": "mp4",
+  "enable_resume": true,
+  "theme": "light",
+  "window_width": 1200,
+  "window_height": 800,
+  "connection_timeout": 30,
+  "read_timeout": 60,
+  "max_retries": 3,
+  "check_interval": 3600,
+  "auto_download_new": false,
+  "hardware_acceleration_enabled": false,
+  "hardware_acceleration_gpu_type": "auto",
+  "hardware_acceleration_encoder": "auto",
+  "hardware_acceleration_quality": "medium",
+  "optimal_download_hours": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "max_bandwidth_usage": 0.8,
+  "post_download_action": "none"
 }

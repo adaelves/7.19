@@ -9,7 +9,13 @@
 
 /* 主窗口 */
 QMainWindow {
-    background-color: transparent;
+    background-color: rgba(245, 245, 247, 0.95);
+    border-radius: 10px;
+}
+
+/* 统一圆角设计 */
+QFrame, QPushButton, QLineEdit, QListWidget {
+    border-radius: 8px;
 }
 
 /* 标题栏 */
@@ -31,9 +37,9 @@ QMainWindow {
 
 /* macOS窗口控制按钮 */
 #windowControlClose {
-    background-color: #ff5f57;
-    border: 1px solid #e0443e;
     border-radius: 6px;
+    background-color: #ff5f58;
+    border: none;
 }
 
 #windowControlClose:hover {
@@ -41,23 +47,23 @@ QMainWindow {
 }
 
 #windowControlMinimize {
-    background-color: #ffbd2e;
-    border: 1px solid #dea123;
     border-radius: 6px;
+    background-color: #ffbd2e;
+    border: none;
 }
 
 #windowControlMinimize:hover {
-    background-color: #ffab00;
+    background-color: #ffaa00;
 }
 
 #windowControlMaximize {
-    background-color: #28ca42;
-    border: 1px solid #1aad29;
     border-radius: 6px;
+    background-color: #14cd59;
+    border: none;
 }
 
 #windowControlMaximize:hover {
-    background-color: #1db954;
+    background-color: #00b33c;
 }
 
 /* 功能按钮 */
